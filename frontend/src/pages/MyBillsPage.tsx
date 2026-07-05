@@ -6,6 +6,10 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { getMyBills, type Bill } from '@/services/billService';
 import { toast } from 'sonner';
 
+type ApiError = {
+    response?: { data?: { message?: string } };
+};
+
 const MyBillsPage = () => {
     const navigate = useNavigate();
     const user = useAuthStore((s) => s.user);
@@ -24,9 +28,10 @@ const MyBillsPage = () => {
                 setLoading(true);
                 const data = await getMyBills();
                 setBills(data);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error('Error fetching bills:', error);
-                const message = error.response?.data?.message || 'Không thể tải danh sách khoản thu.';
+                const apiError = error as ApiError;
+                const message = apiError.response?.data?.message || 'Không thể tải danh sách khoản thu.';
                 toast.error(message);
             } finally {
                 setLoading(false);

@@ -32,6 +32,11 @@ export interface BillsResponse {
     };
 }
 
+type ApiError = {
+    response?: unknown;
+    message?: string;
+};
+
 export const getMyBills = async (): Promise<Bill[]> => {
     const response = await axios.get('/bills/my');
     return response.data.bills;
@@ -61,10 +66,11 @@ export const getBills = async (filters?: BillFilters): Promise<BillsResponse> =>
         console.log('getBills response status:', response.status);
         console.log('getBills response data:', response.data);
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const apiError = error as ApiError;
         console.error('getBills error:', error);
-        console.error('Error response:', error.response);
-        console.error('Error message:', error.message);
+        console.error('Error response:', apiError.response);
+        console.error('Error message:', apiError.message);
         throw error;
     }
 };
@@ -83,7 +89,7 @@ export const updateBill = async (billId: number, data: UpdateBillData): Promise<
     try {
         const response = await axios.put(`/bills/${billId}`, data);
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('updateBill error:', error);
         throw error;
     }
@@ -103,7 +109,7 @@ export const createBill = async (data: CreateBillData): Promise<Bill> => {
     try {
         const response = await axios.post('/bills', data);
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('createBill error:', error);
         throw error;
     }
@@ -112,7 +118,7 @@ export const createBill = async (data: CreateBillData): Promise<Bill> => {
 export const deleteBill = async (billId: number): Promise<void> => {
     try {
         await axios.delete(`/bills/${billId}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('deleteBill error:', error);
         throw error;
     }

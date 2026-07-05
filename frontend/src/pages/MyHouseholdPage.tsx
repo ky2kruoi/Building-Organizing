@@ -7,6 +7,10 @@ import { getMyHousehold, type Household } from '@/services/householdService';
 import { toast } from 'sonner';
 import { formatUTCToLocal } from '@/lib/formatDate';
 
+type ApiError = {
+    response?: { data?: { message?: string } };
+};
+
 const MyHouseholdPage = () => {
     const navigate = useNavigate();
     const user = useAuthStore((s) => s.user);
@@ -24,9 +28,10 @@ const MyHouseholdPage = () => {
                 setLoading(true);
                 const data = await getMyHousehold();
                 setHousehold(data);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error('Error fetching household:', error);
-                const message = error.response?.data?.message || 'Không thể tải thông tin hộ gia đình.';
+                const apiError = error as ApiError;
+                const message = apiError.response?.data?.message || 'Không thể tải thông tin hộ gia đình.';
                 toast.error(message);
             } finally {
                 setLoading(false);

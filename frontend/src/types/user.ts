@@ -1,10 +1,11 @@
 export interface User {
-    _id: string; 
+    userId: number;
     username: string;
     email: string;
     fullName: string;
     role: 'RESIDENT' | 'ADMIN';
     status?: 'ACTIVE' | 'LOCKED';
+    householdId?: number | null;
     phone?: string;
     createdAt?: string;
     updatedAt?: string;

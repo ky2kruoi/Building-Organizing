@@ -7,7 +7,6 @@ import {z} from 'zod';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod'
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useNavigate } from "react-router";
 
 const signInSchema = z.object({
 
@@ -23,7 +22,6 @@ export function SigninForm({
   ...props
 }: React.ComponentProps<"div">) {
     const {signIn} = useAuthStore();
-    const navigate = useNavigate();
 
      const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<SignInFormValues>({
             resolver: zodResolver(signInSchema)
@@ -35,7 +33,7 @@ export function SigninForm({
             await signIn (username, password);
             // Sử dụng window.location để refresh toàn bộ trang
             window.location.href = '/';
-          } catch (error) {
+          } catch {
             // Error already handled in store with toast
           }
         };

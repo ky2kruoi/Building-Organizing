@@ -80,7 +80,7 @@ const StatisticsPage = () => {
         OVERDUE: 'Quá hạn',
         UNKNOWN: 'Không xác định',
       };
-      const mappedPaymentStatus = paymentStatusData.data.map((p: any) => ({
+      const mappedPaymentStatus = paymentStatusData.data.map((p: PaymentStatusStatistics) => ({
         ...p,
         paymentStatus: statusMap[p.paymentStatus] || p.paymentStatus,
       }));
@@ -247,7 +247,7 @@ const StatisticsPage = () => {
                         // By Fee Type
                         lines.push('--- Theo loại phí ---');
                         lines.push('Loại phí,Tổng hóa đơn,Tổng doanh thu,Đã thu,Chưa thu');
-                        feeTypeData.data.forEach((f: any) => {
+                        feeTypeData.data.forEach((f: FeeTypeStatistics) => {
                         lines.push(`"${f.feeTypeName}",${f.totalBills},${f.totalRevenue},${f.totalPaid},${f.unpaidAmount}`);
                         });
                         lines.push('');
@@ -255,7 +255,7 @@ const StatisticsPage = () => {
                         // By Household
                         lines.push('--- Theo hộ gia đình ---');
                         lines.push('Hộ gia đình,Tổng hóa đơn,Tổng doanh thu,Đã thu,Chưa thu');
-                        householdData.data.forEach((h: any) => {
+                        householdData.data.forEach((h: HouseholdStatistics) => {
                         lines.push(`"${h.householdName}",${h.totalBills},${h.totalRevenue},${h.totalPaid},${h.unpaidAmount}`);
                         });
                         lines.push('');
@@ -263,7 +263,7 @@ const StatisticsPage = () => {
                         // By Collector
                         lines.push('--- Theo người thu ---');
                         lines.push('Người thu,Tổng hóa đơn,Tổng doanh thu,Đã thu,Chưa thu');
-                        collectorData.data.forEach((c: any) => {
+                        collectorData.data.forEach((c: CollectorStatistics) => {
                         lines.push(`"${c.collectorName}",${c.totalBills},${c.totalRevenue},${c.totalPaid},${c.unpaidAmount}`);
                         });
                         lines.push('');
@@ -279,7 +279,7 @@ const StatisticsPage = () => {
                         OVERDUE: 'Quá hạn',
                         UNKNOWN: 'Không xác định',
                         };
-                        paymentStatusData.data.forEach((p: any) => {
+                        paymentStatusData.data.forEach((p: PaymentStatusStatistics) => {
                         const label = statusMapCsv[p.paymentStatus] || p.paymentStatus;
                         lines.push(`"${label}",${p.totalBills},${p.totalRevenue},${p.totalPaid},${p.unpaidAmount}`);
                         });
@@ -288,7 +288,7 @@ const StatisticsPage = () => {
                         // By Period
                         lines.push('--- Theo kỳ ---');
                         lines.push('Kỳ,Tổng hóa đơn,Tổng doanh thu,Đã thu,Chưa thu');
-                        periodData.data.forEach((pd: any) => {
+                        periodData.data.forEach((pd: PeriodStatistics) => {
                         lines.push(`"${pd.period}",${pd.totalBills},${pd.totalRevenue},${pd.totalPaid},${pd.unpaidAmount}`);
                         });
 

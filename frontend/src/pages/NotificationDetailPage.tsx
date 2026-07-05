@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ const NotificationDetailPage = () => {
   const [recipients, setRecipients] = useState<NotificationRecipient[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchRecipients = async () => {
+  const fetchRecipients = useCallback(async () => {
     if (!title || !message || !createdAt) {
       toast.error('Thông tin thông báo không hợp lệ');
       navigate('/sent-notifications');
@@ -32,11 +32,11 @@ const NotificationDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [createdAt, message, navigate, title]);
 
   useEffect(() => {
     fetchRecipients();
-  }, []);
+  }, [fetchRecipients]);
 
   const formatDate = (dateString: string) => formatUTCToLocal(dateString, 'vi-VN', { second: '2-digit' });
 

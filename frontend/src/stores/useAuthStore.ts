@@ -3,6 +3,10 @@ import {toast} from 'sonner'
 import type { AuthState } from '@/types/stores';
 import { authService } from '@/services/authService';
 
+type ApiError = {
+    response?: { status?: number; data?: { message?: string } };
+};
+
 export const useAuthStore = create<AuthState>((set, get) => ({
     accessToken: null,
     user: null,
@@ -24,9 +28,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             //gọi api
             await authService.signUp(username, password, email, firstName, lastName);
             toast.success('Đăng ký thành công! Bạn sẽ được chuyển sang trang đăng nhập');
-        } catch (error: any){
+        } catch (error: unknown){
+            const apiError = error as ApiError;
             console.error(error);
-            const errorMessage = error.response?.data?.message || 'Đăng ký không thành công';
+            const errorMessage = apiError.response?.data?.message || 'Đăng ký không thành công';
             toast.error(errorMessage);
             throw error; // Throw để component có thể handle navigation
         } finally {
@@ -45,13 +50,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             await get().fetchMe();
             toast.success('Đăng nhập thành công');
 
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const apiError = error as ApiError;
             console.error(error);
-            if (error.response?.status === 401) {
+            if (apiError.response?.status === 401) {
                 toast.error('Tên đăng nhập hoặc mật khẩu không đúng');
-            } else if (error.response?.status === 403) {
+            } else if (apiError.response?.status === 403) {
                 // Hiển thị message từ server khi tài khoản bị khóa
-                toast.error(error.response?.data?.message || 'Tài khoản của bạn đang bị khóa. Vui lòng liên hệ quản trị viên.');
+                toast.error(apiError.response?.data?.message || 'Tài khoản của bạn đang bị khóa. Vui lòng liên hệ quản trị viên.');
             } else {
                 toast.error('Đăng nhập không thành công');
             }

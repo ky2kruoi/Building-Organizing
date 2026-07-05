@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getResidentsForCurrentUser, type Resident } from '@/services/residentService';
 import { toast } from 'sonner';
-import { formatUTCToLocal } from '@/lib/formatDate';
+
+type ApiError = {
+    response?: { data?: { message?: string } };
+};
 
 const MyResidentsPage = () => {
     const navigate = useNavigate();
@@ -24,9 +27,10 @@ const MyResidentsPage = () => {
                 setLoading(true);
                 const data = await getResidentsForCurrentUser();
                 setResidents(data);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error('Error fetching residents:', error);
-                const message = error.response?.data?.message || 'Không thể tải danh sách cư dân.';
+                const apiError = error as ApiError;
+                const message = apiError.response?.data?.message || 'Không thể tải danh sách cư dân.';
                 toast.error(message);
             } finally {
                 setLoading(false);

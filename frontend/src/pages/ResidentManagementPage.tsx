@@ -38,13 +38,17 @@ import {
     type CreateResidentData,
     type UpdateResidentData
 } from '@/services/residentService';
-import { formatUTCToLocal } from '@/lib/formatDate';
 import { getAllHouseholds, type Household } from '@/services/householdService';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { MoreVertical, Pencil, Trash2, Plus } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 import { toast } from 'sonner';
+
+type ApiError = {
+    response?: { status: number, data?: { message: string } };
+    message: string;
+};
 
 const ResidentManagementPage = () => {
     const navigate = useNavigate();
@@ -88,8 +92,8 @@ const ResidentManagementPage = () => {
             const response: ResidentResponse = await getAllResidentsForAdmin(filters);
             setResidents(response.residents);
             setPagination(response.pagination);
-        } catch (err: any) {
-            const error = err as { response?: { status: number, data?: { message: string } }, message: string };
+        } catch (err: unknown) {
+            const error = err as ApiError;
             console.error('Error fetching residents:', error);
 
             if (error.response?.status === 401) {
@@ -111,9 +115,9 @@ const ResidentManagementPage = () => {
         try {
             const response = await getAllHouseholds();
             setHouseholds(response);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Error fetching households:', err);
-            const error = err as { response?: { status: number, data?: { message: string } }, message: string };
+            const error = err as ApiError;
 
             if (error.response?.status === 401) {
                 toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
